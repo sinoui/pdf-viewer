@@ -32,3 +32,7 @@
   cursor: pointer;
   outline: none;
 }
+
+.sinoui-pdf-viewer-wrapper__icon-wrapper {
+  margin-left: 16px;
+}

@@ -265,6 +265,7 @@ export default function PdfViewer({
             role="button"
             tabIndex={-1}
             onClick={() => onAddAdditionalNoteClick('additional')}
+            className="sinoui-pdf-viewer-wrapper__icon-wrapper"
           >
             <MessageIcon title="附加批注" />
           </div>
@@ -274,6 +275,7 @@ export default function PdfViewer({
             role="button"
             tabIndex={-1}
             onClick={() => onAddAdditionalNoteClick('text')}
+            className="sinoui-pdf-viewer-wrapper__icon-wrapper"
           >
             <TextIcon title="文字批注" />
           </div>
@@ -304,7 +306,7 @@ export default function PdfViewer({
             <PdfComment
               key={annotation.id}
               annotation={annotation}
-              defaultOpen={newAnnotations.includes(annotation.id)}
+              defaultOpen={false}
               defaultFocus={newAnnotations.includes(annotation.id)}
               onChange={handleCommentChange}
               onRemove={handleCommentRemove}

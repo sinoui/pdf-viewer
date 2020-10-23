@@ -6,6 +6,8 @@ export interface PdfAnnotationType {
   creator: string;
   createTime: string;
   content: string;
+  // 文字批注区域信息
+  rects?: DOMRect[];
 }
 
 /**

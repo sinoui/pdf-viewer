@@ -1,4 +1,10 @@
-function createHeightLight(
+/**
+ * 创建高亮的dom节点
+ * @param param0
+ * @param container
+ * @param annotationId
+ */
+export function createHeightLight(
   { left, top, width, height }: DOMRect,
   container: Element,
   annotationId: string,
@@ -17,43 +23,41 @@ function createHeightLight(
 }
 
 /**
- * 处理光标选中的内容，如果没有选中信息，返回false，否则div添加完成之后返回true
- * @param container pdf的容器
- * @param annotationId 添加的批注的id
+ * 根据section获取对应的区域坐标数组
  */
-export default function genSelectionRange(
-  container: HTMLDivElement,
-  annotationId: string,
-) {
-  const selection = window.getSelection();
-  if (!container || !selection) {
-    return false;
+export function getRectsBySelection(selection?: Selection) {
+  if (!selection) {
+    return [];
   }
-
   const { rangeCount } = selection;
   if (rangeCount === 0) {
-    return false;
+    return [];
   }
 
   const countArr = new Array(rangeCount).fill(0);
 
-  const sum = countArr
-    .map((_, index) => {
-      const clientRects = selection.getRangeAt(index).getClientRects();
-      return clientRects.length;
-    })
-    .reduce((pre, cur) => pre + cur);
-
-  if (sum === 0) {
-    return false;
-  }
-
+  const rects = [] as DOMRect[];
   countArr.forEach((_, index) => {
     const clientRects = selection.getRangeAt(index).getClientRects();
-    Array.from(clientRects).forEach((rect) =>
-      createHeightLight(rect, container, annotationId),
-    );
+    Array.from(clientRects).forEach((rect) => {
+      if (rect.width !== 0) {
+        rects.push(rect);
+      }
+    });
   });
 
-  return true;
+  return rects;
+}
+
+/**
+ * 处理光标选中的内容，如果没有选中信息，返回false，否则div添加完成之后返回true
+ * @param container pdf的容器
+ * @param annotationId 添加的批注的id
+ */
+export function genNodeByRects(
+  rects: DOMRect[],
+  container: HTMLDivElement,
+  annotationId: string,
+) {
+  rects.forEach((rect) => createHeightLight(rect, container, annotationId));
 }

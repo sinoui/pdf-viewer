@@ -12,7 +12,7 @@ import PdfTextComment from './PdfTextComment';
 import { PdfAnnotationType, AnnotationType } from './pdfTypes';
 import './PdfViewer.css';
 import ToolBar from './ToolBar';
-import genSelectionRange from './utils/genSelectionRange';
+import { getRectsBySelection, genNodeByRects } from './utils/genSelectionRange';
 import ToolbarActions from './ToolbarActions';
 import MessageIcon from './icons/MessageIcon';
 import TextIcon from './icons/TextIcon';
@@ -60,6 +60,13 @@ export default function PdfViewer({
   );
 
   const [current, setCurrent] = useState<string>();
+
+  const initHeighLightDom = (nodes: PdfAnnotationType[]) => {
+    const texts = nodes.filter((node) => node.type === 'text');
+    texts.forEach((ano) => {
+      genNodeByRects(ano.rects ?? [], pdfContainerRef.current, ano.id);
+    });
+  };
   const handleDocumentLoadSuccess = async ({ numPages }: any) => {
     setPages(numPages);
     setLoading(false);
@@ -70,6 +77,7 @@ export default function PdfViewer({
       setNewAnnotations(
         defaultAnnotations.map((item: PdfAnnotationType) => item.id),
       );
+      initHeighLightDom(defaultAnnotations);
     } else {
       const defaultData = localStorage.getItem('pdf-annotations');
       const defaultAnnotations = defaultData ? JSON.parse(defaultData) : [];
@@ -77,6 +85,7 @@ export default function PdfViewer({
       setNewAnnotations(
         defaultAnnotations.map((item: PdfAnnotationType) => item.id),
       );
+      initHeighLightDom(defaultAnnotations);
     }
   };
 
@@ -97,6 +106,7 @@ export default function PdfViewer({
     offsetX: number,
     offsetY: number,
     id = uuid(),
+    rects?: DOMRect[],
   ) => {
     const annotation = {
       id,
@@ -106,6 +116,7 @@ export default function PdfViewer({
       content: '',
       creator,
       createTime: dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+      rects,
     };
     setAnnotations((prev) => [...prev, annotation]);
     setNewAnnotations((prev) => [...prev, id]);
@@ -122,13 +133,14 @@ export default function PdfViewer({
    */
   const handleTextAnnotation = (offsetX: number, offsetY: number) => {
     const id = uuid();
-    const flag = genSelectionRange(pdfContainerRef.current!, id);
-
-    if (!flag) {
+    const selection = window.getSelection();
+    const rects = getRectsBySelection(selection!);
+    if (rects.length === 0) {
       return;
     }
+    genNodeByRects(rects, pdfContainerRef.current!, id);
 
-    handleAddBaseAnnotion(offsetX, offsetY, id);
+    handleAddBaseAnnotion(offsetX, offsetY, id, rects);
   };
 
   /**
@@ -300,6 +312,7 @@ export default function PdfViewer({
               onClick={(event: React.MouseEvent) => handlePageClick(event)}
             />
           ))}
+
           {commonAnnotation.map((annotation) => (
             <PdfComment
               key={annotation.id}

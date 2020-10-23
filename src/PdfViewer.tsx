@@ -39,8 +39,8 @@ export default function PdfViewer({ url, creator = '未知' }: Props) {
   const pdfContainerRef = useRef<HTMLDivElement>(null);
   const [newAnnotations, setNewAnnotations] = useState<String[]>([]);
 
-  const handleDocumentLoadSuccess = ({ numPage }) => {
-    setNumPages(numPage);
+  const handleDocumentLoadSuccess = ({ numPages }: any) => {
+    setNumPages(numPages);
   };
 
   const handlePageClick = (event: React.MouseEvent) => {

@@ -4,10 +4,12 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import uuid from 'uuid/v4';
 import dayjs from 'dayjs';
 import produce from 'immer';
+import { Line } from 'rc-progress';
 import PdfComment from './PdfComment';
-import { PdfAnnotationType } from './pdfTypes';
+import { PdfAnnotationType, AnnotationType } from './pdfTypes';
 import './PdfViewer.css';
 import ToolBar from './ToolBar';
+import genSelectionRange from './utils/genSelectionRange';
 
 interface Props {
   /**
@@ -32,22 +34,32 @@ export default function PdfViewer({ url, creator = '未知' }: Props) {
   const [annotations, setAnnotations] = useState<PdfAnnotationType[]>([]);
   const pdfContainerRef = useRef<HTMLDivElement>(null);
   const [newAnnotations, setNewAnnotations] = useState<String[]>([]);
+  // 加载进度
+  const [progress, setProgress] = useState(0);
+  const [annotationType] = useState<AnnotationType>('text');
 
   const handleDocumentLoadSuccess = ({ numPages }: any) => {
     setPages(numPages);
   };
 
-  const handlePageClick = (event: React.MouseEvent) => {
-    const rect = pdfContainerRef.current?.getBoundingClientRect();
-    if (!rect) {
+  /**
+   * 文字批注
+   * @param offsetX
+   * @param offsetY
+   */
+  const handleTextAnnotation = (offsetX: number, offsetY: number) => {
+    const id = uuid();
+    const flag = genSelectionRange(pdfContainerRef.current!);
+
+    if (!flag) {
       return;
     }
-    const offsetX = event.clientX - rect.left;
-    const offsetY = event.clientY - rect.top;
+
     const annotation = {
-      id: uuid(),
+      id,
       x: offsetX,
       y: offsetY,
+      type: annotationType,
       content: '',
       creator,
       createTime: dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'),
@@ -56,9 +68,32 @@ export default function PdfViewer({ url, creator = '未知' }: Props) {
     setNewAnnotations((prev) => [...prev, annotation.id]);
   };
 
+  /**
+   * 处理pdf的点击事件
+   * @param event
+   */
+  const handlePageClick = (event: React.MouseEvent) => {
+    const rect = pdfContainerRef.current?.getBoundingClientRect();
+    if (!rect) {
+      return;
+    }
+    const offsetX = event.clientX - rect.left;
+    const offsetY = event.clientY - rect.top;
+
+    // 根据不同的批注类型选择不同的处理方式
+    switch (annotationType) {
+      case 'text':
+        handleTextAnnotation(offsetX, offsetY);
+        break;
+
+      default:
+        break;
+    }
+  };
+
   const handleCommentChange = (annotation: PdfAnnotationType) => {
     setAnnotations(
-      produce((draft) => {
+      produce((draft: PdfAnnotationType[]) => {
         const index = draft.findIndex((item) => item.id === annotation.id);
         if (index !== -1) {
           draft[index] = annotation;
@@ -69,13 +104,17 @@ export default function PdfViewer({ url, creator = '未知' }: Props) {
 
   const handleCommentRemove = (annotation: PdfAnnotationType) => {
     setAnnotations(
-      produce((draft) => {
+      produce((draft: PdfAnnotationType[]) => {
         const index = draft.findIndex((item) => item.id === annotation.id);
         if (index !== -1) {
           draft.splice(index, 1);
         }
       }),
     );
+  };
+
+  const onLoadProgress = ({ total = 1, loaded = 0 }) => {
+    setProgress(Math.floor(loaded / total) * 100);
   };
 
   return (
@@ -85,14 +124,15 @@ export default function PdfViewer({ url, creator = '未知' }: Props) {
         <Document
           file={url}
           onLoadSuccess={handleDocumentLoadSuccess}
-          loading={<div>正在加载pdf文件...</div>}
+          loading={<Line percent={progress} strokeWidth={2} />}
+          onLoadProgress={onLoadProgress}
           error={<div>加载文件失败</div>}
         >
           {Array.from(new Array(pages), (_el, index) => (
             <Page
               key={index}
               pageNumber={index + 1}
-              onClick={(event) => handlePageClick(event)}
+              onClick={(event: React.MouseEvent) => handlePageClick(event)}
             />
           ))}
           {annotations.map((annotation) => (

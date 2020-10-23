@@ -58,7 +58,10 @@ function PdfComment({
     }
   };
 
-  const handleStop = (_event, { lastX, lastY }) => {
+  const handleStop = (
+    _event: any,
+    { lastX, lastY }: { lastX: number; lastY: number },
+  ) => {
     if (onChange) {
       onChange({
         ...annotation,
@@ -68,7 +71,15 @@ function PdfComment({
     }
   };
 
-  return (
+  return annotation.type === 'text' ? (
+    <PdfCommentBox
+      annotation={annotation}
+      open={isOpen}
+      onClose={() => setIsOpen(false)}
+      ref={boxRef}
+      onChange={handleContentChange}
+    />
+  ) : (
     <>
       <Draggable
         onStop={handleStop}

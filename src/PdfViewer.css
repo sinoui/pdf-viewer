@@ -25,3 +25,10 @@
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 10px;
 }
+
+.sinoui-pdf-viewer-wrapper .pdf-text-annotation {
+  background-color: #ffcc66;
+  opacity: 0.4;
+  cursor: pointer;
+  outline: none;
+}

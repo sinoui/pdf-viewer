@@ -71,15 +71,7 @@ function PdfComment({
     }
   };
 
-  return annotation.type === 'text' ? (
-    <PdfCommentBox
-      annotation={annotation}
-      open={isOpen}
-      onClose={() => setIsOpen(false)}
-      ref={boxRef}
-      onChange={handleContentChange}
-    />
-  ) : (
+  return (
     <>
       <Draggable
         onStop={handleStop}

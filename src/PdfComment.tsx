@@ -1,29 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
 import Draggable from 'react-draggable';
 import { PdfAnnotationType } from './pdfTypes';
 import PdfCommentBox from './PdfCommentBox';
 import MessageIcon from './icons/MessageIcon';
-
-const Wrapper = styled.div`
-  display: inline-block;
-  background-color: #f9f1af;
-  padding: 0px 4px;
-  font-size: 20px;
-  border: 1px solid black;
-  border-radius: 4px;
-  overflow: hidden;
-  cursor: pointer;
-  outline: none;
-  position: absolute;
-  left: 0;
-  top: 0;
-  cursor: move;
-
-  &:focus {
-    background-color: #f3e577;
-  }
-`;
+import './PdfComment.css';
 
 interface Props {
   annotation: PdfAnnotationType;
@@ -94,9 +74,15 @@ function PdfComment({
         onStop={handleStop}
         defaultPosition={{ x: annotation.x, y: annotation.y }}
       >
-        <Wrapper onClick={handleIconClick} tabIndex={0} onKeyUp={handleKeyUp}>
+        <div
+          role="button"
+          onClick={handleIconClick}
+          tabIndex={0}
+          onKeyUp={handleKeyUp}
+          className="sinoui-pdf-commemt-icon-wrapper"
+        >
           <MessageIcon />
-        </Wrapper>
+        </div>
       </Draggable>
       <PdfCommentBox
         annotation={annotation}

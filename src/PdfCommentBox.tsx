@@ -1,10 +1,10 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
-import styled from 'styled-components';
 import CustomScrollbar from 'react-custom-scrollbars';
 import classNames from 'classnames';
 import { PdfAnnotationType } from './pdfTypes';
 import MessageIcon from './icons/MessageIcon';
 import CloseIcon from './icons/CloseIcon';
+import './PdfCommentBox.css';
 
 interface Props {
   annotation: PdfAnnotationType;
@@ -15,57 +15,6 @@ interface Props {
   style?: React.CSSProperties;
   onChange?: (value: string) => void;
 }
-
-const BoxWrapper = styled.div`
-  width: 260px;
-  height: 180px;
-  border: 1px solid black;
-  box-sizing: border-box;
-  background-color: white;
-  right: -262px;
-  position: absolute;
-  background-color: #f4e9d6;
-  transform: translateY(-15px);
-  &:hover {
-    background-color: #fff4e0;
-  }
-  padding: 8px;
-
-  & .editor {
-    padding: 4px;
-    height: 98px;
-    box-sizing: border-box;
-    border: 1px solid transparent;
-
-    &.is-focused {
-      border-color: rgba(0, 0, 0, 0.38);
-      outline: none;
-      background: white;
-    }
-
-    .editor-inner {
-      outline: none;
-      min-height: 88px;
-    }
-  }
-
-  & .close-btn {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-  }
-
-  & .pdf-comment-username {
-    display: inline-block;
-    padding-left: 8px;
-  }
-
-  .svg-icon-message {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-  }
-`;
 
 /**
  * pdf批注盒子
@@ -90,7 +39,10 @@ const PdfCommentBox = React.forwardRef<{ focus: Function }, Props>(
     );
 
     return open ? (
-      <BoxWrapper style={{ ...posStyle, ...style }}>
+      <div
+        className="sinoui-pdf-comment-box-wrapper"
+        style={{ ...posStyle, ...style }}
+      >
         <div>
           <MessageIcon />
           <span className="pdf-comment-username">{annotation.creator}</span>
@@ -117,7 +69,7 @@ const PdfCommentBox = React.forwardRef<{ focus: Function }, Props>(
             />
           </CustomScrollbar>
         </div>
-      </BoxWrapper>
+      </div>
     ) : null;
   },
 );

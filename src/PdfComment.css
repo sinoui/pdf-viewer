@@ -1,0 +1,19 @@
+.sinoui-pdf-commemt-icon-wrapper {
+  display: inline-block;
+  background-color: #f9f1af;
+  padding: 0px 4px;
+  font-size: 20px;
+  border: 1px solid black;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  outline: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  cursor: move;
+}
+
+.sinoui-pdf-commemt-icon-wrapper:focus {
+  background-color: #f3e577;
+}

@@ -1,0 +1,16 @@
+.sinoui-pdf-viewer-wrapper {
+  background-color: #565656;
+  overflow: auto;
+  max-height: 100vh;
+}
+
+.sinoui-pdf-viewer-wrapper > div {
+  width: 594px;
+  margin: 8px auto;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.sinoui-pdf-viewer-wrapper .react-pdf__Page {
+  padding: 8px 0;
+}

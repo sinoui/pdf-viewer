@@ -1,34 +1,17 @@
 import React, { useState, useRef } from 'react';
 import { Document, Page } from 'react-pdf/dist/entry.webpack';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
-import styled from 'styled-components';
 import uuid from 'uuid/v4';
 import dayjs from 'dayjs';
 import produce from 'immer';
 import PdfComment from './PdfComment';
 import { PdfAnnotationType } from './pdfTypes';
+import './PdfViewer.css';
 
 interface Props {
   url: string;
   creator?: string;
 }
-
-const PdfViewerWrapper = styled.div`
-  background-color: #565656;
-  overflow: auto;
-  max-height: 100vh;
-
-  > div {
-    width: 594px;
-    margin: 8px auto;
-    box-sizing: border-box;
-    position: relative;
-  }
-
-  .react-pdf__Page {
-    padding: 8px 0;
-  }
-`;
 
 /**
  * pdf阅读器
@@ -85,7 +68,7 @@ export default function PdfViewer({ url, creator = '未知' }: Props) {
   };
 
   return (
-    <PdfViewerWrapper>
+    <div className="sinoui-pdf-viewer-wrapper">
       <div ref={pdfContainerRef}>
         <Document
           file={url}
@@ -112,6 +95,6 @@ export default function PdfViewer({ url, creator = '未知' }: Props) {
           ))}
         </Document>
       </div>
-    </PdfViewerWrapper>
+    </div>
   );
 }

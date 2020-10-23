@@ -16,3 +16,14 @@
 .sinoui-pdf-viewer-wrapper .react-pdf__Page {
   padding: 8px 0;
 }
+
+.sinoui-pdf-viewer-wrapper::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background-color: #ffffff;
+}
+
+.sinoui-pdf-viewer-wrapper::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}

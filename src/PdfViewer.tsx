@@ -36,25 +36,19 @@ export default function PdfViewer({ url, creator = '未知' }: Props) {
   const [newAnnotations, setNewAnnotations] = useState<String[]>([]);
   // 加载进度
   const [progress, setProgress] = useState(0);
-  const [annotationType] = useState<AnnotationType>('text');
+  const [annotationType] = useState<AnnotationType>('additional');
 
   const handleDocumentLoadSuccess = ({ numPages }: any) => {
     setPages(numPages);
   };
 
   /**
-   * 文字批注
+   * 基本的批注功能
    * @param offsetX
    * @param offsetY
    */
-  const handleTextAnnotation = (offsetX: number, offsetY: number) => {
+  const handleAddBaseAnnotion = (offsetX: number, offsetY: number) => {
     const id = uuid();
-    const flag = genSelectionRange(pdfContainerRef.current!);
-
-    if (!flag) {
-      return;
-    }
-
     const annotation = {
       id,
       x: offsetX,
@@ -66,6 +60,21 @@ export default function PdfViewer({ url, creator = '未知' }: Props) {
     };
     setAnnotations((prev) => [...prev, annotation]);
     setNewAnnotations((prev) => [...prev, annotation.id]);
+  };
+
+  /**
+   * 文字批注
+   * @param offsetX
+   * @param offsetY
+   */
+  const handleTextAnnotation = (offsetX: number, offsetY: number) => {
+    const flag = genSelectionRange(pdfContainerRef.current!);
+
+    if (!flag) {
+      return;
+    }
+
+    handleAddBaseAnnotion(offsetX, offsetY);
   };
 
   /**
@@ -85,7 +94,9 @@ export default function PdfViewer({ url, creator = '未知' }: Props) {
       case 'text':
         handleTextAnnotation(offsetX, offsetY);
         break;
-
+      case 'additional':
+        handleAddBaseAnnotion(offsetX, offsetY);
+        break;
       default:
         break;
     }

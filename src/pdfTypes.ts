@@ -8,4 +8,4 @@ export interface PdfAnnotationType {
   content: string;
 }
 
-export type AnnotationType = 'normal' | 'text';
+export type AnnotationType = 'normal' | 'text' | 'additional';

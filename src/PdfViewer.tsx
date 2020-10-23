@@ -311,6 +311,7 @@ export default function PdfViewer({
             <Page
               key={index}
               pageNumber={index + 1}
+              width={816}
               onClick={(event: React.MouseEvent) => handlePageClick(event)}
             />
           ))}

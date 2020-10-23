@@ -34,13 +34,13 @@ const PdfViewerWrapper = styled.div`
  * pdf阅读器
  */
 export default function PdfViewer({ url, creator = '未知' }: Props) {
-  const [numPages, setNumPages] = useState(0);
+  const [pages, setPages] = useState(0);
   const [annotations, setAnnotations] = useState<PdfAnnotationType[]>([]);
   const pdfContainerRef = useRef<HTMLDivElement>(null);
   const [newAnnotations, setNewAnnotations] = useState<String[]>([]);
 
   const handleDocumentLoadSuccess = ({ numPages }: any) => {
-    setNumPages(numPages);
+    setPages(numPages);
   };
 
   const handlePageClick = (event: React.MouseEvent) => {
@@ -93,7 +93,7 @@ export default function PdfViewer({ url, creator = '未知' }: Props) {
           loading={<div>正在加载pdf文件...</div>}
           error={<div>加载文件失败</div>}
         >
-          {Array.from(new Array(numPages), (_el, index) => (
+          {Array.from(new Array(pages), (_el, index) => (
             <Page
               key={index}
               pageNumber={index + 1}

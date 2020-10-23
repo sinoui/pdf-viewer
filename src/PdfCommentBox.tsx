@@ -1,9 +1,10 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Icon } from 'antd';
 import CustomScrollbar from 'react-custom-scrollbars';
 import classNames from 'classnames';
 import { PdfAnnotationType } from './pdfTypes';
+import MessageIcon from './icons/MessageIcon';
+import CloseIcon from './icons/CloseIcon';
 
 interface Props {
   annotation: PdfAnnotationType;
@@ -58,6 +59,12 @@ const BoxWrapper = styled.div`
     display: inline-block;
     padding-left: 8px;
   }
+
+  .svg-icon-message {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
 `;
 
 /**
@@ -85,11 +92,11 @@ const PdfCommentBox = React.forwardRef<{ focus: Function }, Props>(
     return open ? (
       <BoxWrapper style={{ ...posStyle, ...style }}>
         <div>
-          <Icon type="message" />
+          <MessageIcon />
           <span className="pdf-comment-username">{annotation.creator}</span>
         </div>
         <div>{annotation.createTime}</div>
-        <Icon type="close" onClick={onClose} className="close-btn" />
+        <CloseIcon onClick={onClose} className="close-btn" />
         <hr />
         <div className={classNames('editor', { 'is-focused': isFocused })}>
           <CustomScrollbar>

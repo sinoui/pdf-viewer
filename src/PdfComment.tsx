@@ -1,9 +1,9 @@
-import { Icon } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import Draggable from 'react-draggable';
 import { PdfAnnotationType } from './pdfTypes';
 import PdfCommentBox from './PdfCommentBox';
+import MessageIcon from './icons/MessageIcon';
 
 const Wrapper = styled.div`
   display: inline-block;
@@ -95,7 +95,7 @@ function PdfComment({
         defaultPosition={{ x: annotation.x, y: annotation.y }}
       >
         <Wrapper onClick={handleIconClick} tabIndex={0} onKeyUp={handleKeyUp}>
-          <Icon type="message" />
+          <MessageIcon />
         </Wrapper>
       </Draggable>
       <PdfCommentBox

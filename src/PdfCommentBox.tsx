@@ -59,7 +59,12 @@ const PdfCommentBox = React.forwardRef<{ focus: Function }, Props>(
                 __html: annotation.content,
               }}
               ref={editorRef}
-              onBlur={() => setIsFocused(false)}
+              onBlur={(event) => {
+                setIsFocused(false);
+                if (onChange) {
+                  onChange(event.currentTarget.innerHTML);
+                }
+              }}
               onFocus={(event) => {
                 setIsFocused(true);
                 if (onChange) {

@@ -10,6 +10,8 @@ import { PdfAnnotationType, AnnotationType } from './pdfTypes';
 import './PdfViewer.css';
 import ToolBar from './ToolBar';
 import genSelectionRange from './utils/genSelectionRange';
+import ToolbarActions from './ToolbarActions';
+import MessageIcon from './icons/MessageIcon';
 
 interface Props {
   /**
@@ -36,10 +38,22 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
   const [newAnnotations, setNewAnnotations] = useState<String[]>([]);
   // 加载进度
   const [progress, setProgress] = useState(0);
-  const [annotationType] = useState<AnnotationType>('additional');
+  const [annotationType, setAnnotationType] = useState<AnnotationType>(
+    'normal',
+  );
 
   const handleDocumentLoadSuccess = ({ numPages }: any) => {
     setPages(numPages);
+    const defaultData = localStorage.getItem('pdf-annotations');
+    const defaultAnnotations = defaultData ? JSON.parse(defaultData) : [];
+    setAnnotations(defaultAnnotations);
+    setNewAnnotations(
+      defaultAnnotations.map((item: PdfAnnotationType) => item.id),
+    );
+  };
+
+  const saveToLocalStorage = (notes: PdfAnnotationType[]) => {
+    localStorage.setItem('pdf-annotations', JSON.stringify(notes));
   };
 
   /**
@@ -60,6 +74,7 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
     };
     setAnnotations((prev) => [...prev, annotation]);
     setNewAnnotations((prev) => [...prev, annotation.id]);
+    saveToLocalStorage([...annotations, annotation]);
   };
 
   /**
@@ -100,9 +115,21 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
       default:
         break;
     }
+    setAnnotationType('normal');
   };
 
   const handleCommentChange = (annotation: PdfAnnotationType) => {
+    const idx = annotations.findIndex((item) => item.id === annotation.id);
+    if (idx !== -1) {
+      const newItems = [
+        ...annotations.slice(0, idx),
+        annotation,
+        ...annotations.slice(idx + 1),
+      ];
+      console.log(newItems);
+      saveToLocalStorage(newItems);
+    }
+
     setAnnotations(
       produce((draft: PdfAnnotationType[]) => {
         const index = draft.findIndex((item) => item.id === annotation.id);
@@ -114,6 +141,15 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
   };
 
   const handleCommentRemove = (annotation: PdfAnnotationType) => {
+    const idx = annotations.findIndex((item) => item.id === annotation.id);
+    if (idx !== -1) {
+      const newItems = [
+        ...annotations.slice(0, idx),
+        ...annotations.slice(idx + 1),
+      ];
+      saveToLocalStorage(newItems);
+    }
+
     setAnnotations(
       produce((draft: PdfAnnotationType[]) => {
         const index = draft.findIndex((item) => item.id === annotation.id);
@@ -128,6 +164,10 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
     setProgress(Math.floor(loaded / total) * 100);
   };
 
+  const onAddAdditionalNoteClick = () => {
+    setAnnotationType('additional');
+  };
+
   const fileTitle = useMemo(() => {
     if (title) {
       return title;
@@ -140,6 +180,17 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
     <div className="sinoui-pdf-viewer-wrapper">
       <ToolBar>
         <span>{fileTitle}</span>
+        <div>12</div>
+        <ToolbarActions>
+          <span
+            title="附加批注"
+            role="button"
+            tabIndex={-1}
+            onClick={onAddAdditionalNoteClick}
+          >
+            <MessageIcon title="附加批注" />
+          </span>
+        </ToolbarActions>
       </ToolBar>
       <div ref={pdfContainerRef} className="sinoui-pdf-viewer-content">
         <Document

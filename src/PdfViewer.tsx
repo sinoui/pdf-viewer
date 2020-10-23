@@ -126,7 +126,6 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
         annotation,
         ...annotations.slice(idx + 1),
       ];
-      console.log(newItems);
       saveToLocalStorage(newItems);
     }
 
@@ -182,14 +181,14 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
         <span>{fileTitle}</span>
         <div>12</div>
         <ToolbarActions>
-          <span
+          <div
             title="附加批注"
             role="button"
             tabIndex={-1}
             onClick={onAddAdditionalNoteClick}
           >
             <MessageIcon title="附加批注" />
-          </span>
+          </div>
         </ToolbarActions>
       </ToolBar>
       <div ref={pdfContainerRef} className="sinoui-pdf-viewer-content">

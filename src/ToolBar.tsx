@@ -2,7 +2,7 @@ import React from 'react';
 import './ToolBar.css';
 
 export interface Props {
-  children?: React.ReactChild;
+  children?: React.ReactNode;
 }
 
 export default function ToolBar(props: Props) {

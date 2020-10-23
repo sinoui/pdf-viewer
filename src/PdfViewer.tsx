@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { Document, Page } from 'react-pdf/dist/entry.webpack';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import uuid from 'uuid/v4';
@@ -29,7 +29,7 @@ interface Props {
 /**
  * pdf阅读器
  */
-export default function PdfViewer({ url, creator = '未知' }: Props) {
+export default function PdfViewer({ url, creator = '未知', title }: Props) {
   const [pages, setPages] = useState(0);
   const [annotations, setAnnotations] = useState<PdfAnnotationType[]>([]);
   const pdfContainerRef = useRef<HTMLDivElement>(null);
@@ -117,9 +117,19 @@ export default function PdfViewer({ url, creator = '未知' }: Props) {
     setProgress(Math.floor(loaded / total) * 100);
   };
 
+  const fileTitle = useMemo(() => {
+    if (title) {
+      return title;
+    }
+    const arr = url.split('/');
+    return arr[arr.length - 1];
+  }, [title, url]);
+
   return (
     <div className="sinoui-pdf-viewer-wrapper">
-      <ToolBar>SJF </ToolBar>
+      <ToolBar>
+        <span>{fileTitle}</span>
+      </ToolBar>
       <div ref={pdfContainerRef} className="sinoui-pdf-viewer-content">
         <Document
           file={url}

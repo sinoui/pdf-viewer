@@ -1,4 +1,5 @@
-import React, { useState, useRef, useMemo } from 'react';
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 import { Document, Page } from 'react-pdf/dist/entry.webpack';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import uuid from 'uuid/v4';
@@ -6,6 +7,7 @@ import dayjs from 'dayjs';
 import produce from 'immer';
 import { Line } from 'rc-progress';
 import PdfComment from './PdfComment';
+import PdfTextComment from './PdfTextComment';
 import { PdfAnnotationType, AnnotationType } from './pdfTypes';
 import './PdfViewer.css';
 import ToolBar from './ToolBar';
@@ -36,17 +38,20 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
   const [annotations, setAnnotations] = useState<PdfAnnotationType[]>([]);
   const pdfContainerRef = useRef<HTMLDivElement>(null);
   const [newAnnotations, setNewAnnotations] = useState<String[]>([]);
+  const [loading, setLoading] = useState(true);
   // 加载进度
   const [progress, setProgress] = useState(0);
   const [annotationType, setAnnotationType] = useState<AnnotationType>(
     'normal',
   );
 
+  const [current, setCurrent] = useState<string>();
   const handleDocumentLoadSuccess = ({ numPages }: any) => {
     setPages(numPages);
     const defaultData = localStorage.getItem('pdf-annotations');
     const defaultAnnotations = defaultData ? JSON.parse(defaultData) : [];
     setAnnotations(defaultAnnotations);
+    setLoading(false);
     setNewAnnotations(
       defaultAnnotations.map((item: PdfAnnotationType) => item.id),
     );
@@ -61,8 +66,11 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
    * @param offsetX
    * @param offsetY
    */
-  const handleAddBaseAnnotion = (offsetX: number, offsetY: number) => {
-    const id = uuid();
+  const handleAddBaseAnnotion = (
+    offsetX: number,
+    offsetY: number,
+    id = uuid(),
+  ) => {
     const annotation = {
       id,
       x: offsetX,
@@ -73,7 +81,10 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
       createTime: dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'),
     };
     setAnnotations((prev) => [...prev, annotation]);
-    setNewAnnotations((prev) => [...prev, annotation.id]);
+    setNewAnnotations((prev) => [...prev, id]);
+    //  批注添加完成之后返回普通操作的模式
+    setAnnotationType('normal');
+    setCurrent(id);
     saveToLocalStorage([...annotations, annotation]);
   };
 
@@ -83,13 +94,14 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
    * @param offsetY
    */
   const handleTextAnnotation = (offsetX: number, offsetY: number) => {
-    const flag = genSelectionRange(pdfContainerRef.current!);
+    const id = uuid();
+    const flag = genSelectionRange(pdfContainerRef.current!, id);
 
     if (!flag) {
       return;
     }
 
-    handleAddBaseAnnotion(offsetX, offsetY);
+    handleAddBaseAnnotion(offsetX, offsetY, id);
   };
 
   /**
@@ -97,6 +109,8 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
    * @param event
    */
   const handlePageClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    setCurrent(undefined);
     const rect = pdfContainerRef.current?.getBoundingClientRect();
     if (!rect) {
       return;
@@ -175,6 +189,37 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
     return arr[arr.length - 1];
   }, [title, url]);
 
+  const handleClick = (event: any) => {
+    const { target } = event;
+    const {
+      dataset: { id },
+    } = target;
+
+    if (!id) {
+      return;
+    }
+    setCurrent(id);
+    setNewAnnotations([id]);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const code = event.key;
+    if (code === 'Delete' && current) {
+      const anno = annotations.find((item) => item.id === current);
+      handleCommentRemove(anno!);
+    }
+  };
+
+  const textAnnotation = useMemo(
+    () => annotations.filter((item) => item.type === 'text'),
+    [annotations],
+  );
+
+  const commonAnnotation = useMemo(
+    () => annotations.filter((item) => item.type !== 'text'),
+    [annotations],
+  );
+
   return (
     <div className="sinoui-pdf-viewer-wrapper">
       <ToolBar>
@@ -191,13 +236,19 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
           </div>
         </ToolbarActions>
       </ToolBar>
-      <div ref={pdfContainerRef} className="sinoui-pdf-viewer-content">
+      {loading && <Line percent={progress} />}
+      <div
+        ref={pdfContainerRef}
+        className="sinoui-pdf-viewer-content"
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+      >
         <Document
           file={url}
           onLoadSuccess={handleDocumentLoadSuccess}
-          loading={<Line percent={progress} strokeWidth={2} />}
-          onLoadProgress={onLoadProgress}
+          loading={<></>}
           error={<div>加载文件失败</div>}
+          onLoadProgress={onLoadProgress}
         >
           {Array.from(new Array(pages), (_el, index) => (
             <Page
@@ -206,7 +257,7 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
               onClick={(event: React.MouseEvent) => handlePageClick(event)}
             />
           ))}
-          {annotations.map((annotation) => (
+          {commonAnnotation.map((annotation) => (
             <PdfComment
               key={annotation.id}
               annotation={annotation}
@@ -214,6 +265,17 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
               defaultFocus={newAnnotations.includes(annotation.id)}
               onChange={handleCommentChange}
               onRemove={handleCommentRemove}
+            />
+          ))}
+
+          {textAnnotation.map((annotation) => (
+            <PdfTextComment
+              key={annotation.id}
+              annotation={annotation}
+              defaultOpen={current === annotation.id}
+              defaultFocus={current === annotation.id}
+              onChange={handleCommentChange}
+              onClose={() => setCurrent(undefined)}
             />
           ))}
         </Document>

@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import React, { useState, useRef, useMemo, useEffect } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { Document, Page } from 'react-pdf/dist/entry.webpack';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import uuid from 'uuid/v4';
@@ -28,12 +28,24 @@ interface Props {
    * 指定文件名称
    */
   title?: string;
+  /**
+   * 自定义存储
+   */
+  annotationsStore?: {
+    get: () => Promise<any>;
+    save: (annotations: PdfAnnotationType[]) => Promise<any>;
+  };
 }
 
 /**
  * pdf阅读器
  */
-export default function PdfViewer({ url, creator = '未知', title }: Props) {
+export default function PdfViewer({
+  url,
+  creator = '未知',
+  title,
+  annotationsStore,
+}: Props) {
   const [pages, setPages] = useState(0);
   const [annotations, setAnnotations] = useState<PdfAnnotationType[]>([]);
   const pdfContainerRef = useRef<HTMLDivElement>(null);
@@ -46,18 +58,31 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
   );
 
   const [current, setCurrent] = useState<string>();
-  const handleDocumentLoadSuccess = ({ numPages }: any) => {
+  const handleDocumentLoadSuccess = async ({ numPages }: any) => {
     setPages(numPages);
-    const defaultData = localStorage.getItem('pdf-annotations');
-    const defaultAnnotations = defaultData ? JSON.parse(defaultData) : [];
-    setAnnotations(defaultAnnotations);
     setLoading(false);
-    setNewAnnotations(
-      defaultAnnotations.map((item: PdfAnnotationType) => item.id),
-    );
+
+    if (annotationsStore) {
+      const defaultAnnotations = await annotationsStore.get();
+      setAnnotations(defaultAnnotations);
+      setNewAnnotations(
+        defaultAnnotations.map((item: PdfAnnotationType) => item.id),
+      );
+    } else {
+      const defaultData = localStorage.getItem('pdf-annotations');
+      const defaultAnnotations = defaultData ? JSON.parse(defaultData) : [];
+      setAnnotations(defaultAnnotations);
+      setNewAnnotations(
+        defaultAnnotations.map((item: PdfAnnotationType) => item.id),
+      );
+    }
   };
 
-  const saveToLocalStorage = (notes: PdfAnnotationType[]) => {
+  const saveAnnotations = (notes: PdfAnnotationType[]) => {
+    if (annotationsStore) {
+      annotationsStore.save(notes);
+    }
+
     localStorage.setItem('pdf-annotations', JSON.stringify(notes));
   };
 
@@ -85,7 +110,7 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
     //  批注添加完成之后返回普通操作的模式
     setAnnotationType('normal');
     setCurrent(id);
-    saveToLocalStorage([...annotations, annotation]);
+    saveAnnotations([...annotations, annotation]);
   };
 
   /**
@@ -140,7 +165,7 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
         annotation,
         ...annotations.slice(idx + 1),
       ];
-      saveToLocalStorage(newItems);
+      saveAnnotations(newItems);
     }
 
     setAnnotations(
@@ -160,7 +185,7 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
         ...annotations.slice(0, idx),
         ...annotations.slice(idx + 1),
       ];
-      saveToLocalStorage(newItems);
+      saveAnnotations(newItems);
     }
 
     setAnnotations(
@@ -221,7 +246,10 @@ export default function PdfViewer({ url, creator = '未知', title }: Props) {
   );
 
   return (
-    <div className="sinoui-pdf-viewer-wrapper">
+    <div
+      className="sinoui-pdf-viewer-wrapper"
+      onKeyDown={(event) => console.log(event)}
+    >
       <ToolBar>
         <span>{fileTitle}</span>
         <div>12</div>

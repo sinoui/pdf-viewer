@@ -5,10 +5,12 @@
 }
 
 .sinoui-pdf-viewer-wrapper > div {
-  width: 594px;
+  width: 816px;
   margin: 8px auto;
   box-sizing: border-box;
   position: relative;
+  display: flex;
+  justify-content: center;
 }
 
 .sinoui-pdf-viewer-wrapper .react-pdf__Page {

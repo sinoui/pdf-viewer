@@ -1,6 +1,45 @@
-# pdf-viewer
+# @sinoui/pdf-viewer
 
-这是由[ts-lib-scripts](https://github.com/sinoui/ts-lib-scripts)创建的TypeScript库项目。
+基于[react-pdf](https://projects.wojtekmaj.pl/react-pdf/)的 pdf 预览。
+
+## 基本使用
+
+```tsx
+import PdfViewer from '@sinoui/pdf-viewer';
+import testFilePath from './test.pdf';
+
+<PdfViewer url={testFilePath} title="xxx.pdf" />;
+```
+
+## PdfViewer 属性列表
+
+| 属性名称         | 属性类型                                                                                | 属性说明       |
+| ---------------- | --------------------------------------------------------------------------------------- | -------------- |
+| url              | string                                                                                  | 指定文件路径   |
+| creator          | string                                                                                  | 文件编辑人     |
+| title            | string                                                                                  | 文件标题       |
+| annotationsStore | ` {get: () => Promise<any>; save: (annotations: PdfAnnotationType[]) =>Promise<any> };` | 自定义存储方式 |
+
+## 批注存储
+
+批注信息默认存储在`localStorage`中,如果需要与后端交互，则需要通过`annotationsStore`属性指定存储方式，具体如下：
+
+```tsx
+const annotationsStore = {
+  async get() {
+    return await http.get(`/apis/pdf-annotations/${fileId}`);
+  },
+  async save(annotations) {
+    return await http.post(`/apis/pdf-annotations/${fileId}`, annotations);
+  },
+};
+
+<PdfViewer
+  url={testFilePath}
+  creator="张三"
+  annotationsStore={annotationsStore}
+/>;
+```
 
 ## 本地开发
 

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState, useRef, useMemo } from 'react';
 import { Document, Page } from 'react-pdf/dist/entry.webpack';
@@ -14,6 +15,7 @@ import ToolBar from './ToolBar';
 import genSelectionRange from './utils/genSelectionRange';
 import ToolbarActions from './ToolbarActions';
 import MessageIcon from './icons/MessageIcon';
+import TextIcon from './icons/TextIcon';
 
 interface Props {
   /**
@@ -154,7 +156,6 @@ export default function PdfViewer({
       default:
         break;
     }
-    setAnnotationType('normal');
   };
 
   const handleCommentChange = (annotation: PdfAnnotationType) => {
@@ -202,8 +203,8 @@ export default function PdfViewer({
     setProgress(Math.floor(loaded / total) * 100);
   };
 
-  const onAddAdditionalNoteClick = () => {
-    setAnnotationType('additional');
+  const onAddAdditionalNoteClick = (type: AnnotationType) => {
+    setAnnotationType(type);
   };
 
   const fileTitle = useMemo(() => {
@@ -223,6 +224,7 @@ export default function PdfViewer({
     if (!id) {
       return;
     }
+    target.focus();
     setCurrent(id);
     setNewAnnotations([id]);
   };
@@ -232,6 +234,13 @@ export default function PdfViewer({
     if (code === 'Delete' && current) {
       const anno = annotations.find((item) => item.id === current);
       handleCommentRemove(anno!);
+      const nodes = document.querySelectorAll('.pdf-text-annotation');
+      Array.from(nodes).forEach((node: any) => {
+        const { id } = node.dataset;
+        if (id === current) {
+          pdfContainerRef.current?.removeChild(node);
+        }
+      });
     }
   };
 
@@ -246,10 +255,7 @@ export default function PdfViewer({
   );
 
   return (
-    <div
-      className="sinoui-pdf-viewer-wrapper"
-      onKeyDown={(event) => console.log(event)}
-    >
+    <div className="sinoui-pdf-viewer-wrapper">
       <ToolBar>
         <span>{fileTitle}</span>
         <div>12</div>
@@ -258,9 +264,18 @@ export default function PdfViewer({
             title="附加批注"
             role="button"
             tabIndex={-1}
-            onClick={onAddAdditionalNoteClick}
+            onClick={() => onAddAdditionalNoteClick('additional')}
           >
             <MessageIcon title="附加批注" />
+          </div>
+
+          <div
+            title="文字批注"
+            role="button"
+            tabIndex={-1}
+            onClick={() => onAddAdditionalNoteClick('text')}
+          >
+            <TextIcon title="文字批注" />
           </div>
         </ToolbarActions>
       </ToolBar>
@@ -300,7 +315,7 @@ export default function PdfViewer({
             <PdfTextComment
               key={annotation.id}
               annotation={annotation}
-              defaultOpen={current === annotation.id}
+              defaultOpen={newAnnotations.includes(annotation.id)}
               defaultFocus={current === annotation.id}
               onChange={handleCommentChange}
               onClose={() => setCurrent(undefined)}

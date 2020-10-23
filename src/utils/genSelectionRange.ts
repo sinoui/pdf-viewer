@@ -10,11 +10,9 @@ function createHeightLight(
   node.style.left = `${left - rootLeft}px`;
   node.style.width = `${width}px`;
   node.style.height = `${height}px`;
-  node.style.backgroundColor = 'yellow';
-  node.style.opacity = '0.4';
-  node.style.cursor = 'pointer';
+  node.classList.add('pdf-text-annotation');
   node.dataset.id = annotationId;
-
+  node.tabIndex = 0;
   container.appendChild(node);
 }
 

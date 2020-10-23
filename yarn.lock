@@ -1050,7 +1050,7 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.10.3", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.3.1", "@babel/runtime@^7.5.0", "@babel/runtime@^7.5.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.10.1", "@babel/runtime@^7.10.2", "@babel/runtime@^7.10.3", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.3.1", "@babel/runtime@^7.5.0", "@babel/runtime@^7.5.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
   version "7.12.1"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.1.tgz#b4116a6b6711d010b2dad3b7b6e43bf1b9954740"
   integrity sha512-J5AIf3vPj3UwXaAzb5j1xM4WAQDX3EMgemF8rjCP3SoW09LfRKAXQKt6CoVYl230P6iWdRcBbnLDDdnqWxZSCA==
@@ -5299,9 +5299,9 @@ data-urls@^2.0.0:
     whatwg-url "^8.0.0"
 
 dayjs@^1.8.5:
-  version "1.9.3"
-  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.9.3.tgz#b7f94b22ad2a136a4ca02a01ab68ae893fe1a268"
-  integrity sha512-V+1SyIvkS+HmNbN1G7A9+ERbFTV9KTXu6Oor98v2xHmzzpp52OIJhQuJSTywWuBY5pyAEmlwbCi1Me87n/SLOw==
+  version "1.9.4"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.9.4.tgz#fcde984e227f4296f04e7b05720adad2e1071f1b"
+  integrity sha512-ABSF3alrldf7nM9sQ2U+Ln67NRwmzlLOqG7kK03kck0mw3wlSSEKv/XhKGGxUjQcS57QeiCyNdrFgtj9nWlrng==
 
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.9:
   version "2.6.9"
@@ -11102,6 +11102,14 @@ raw-loader@^4.0.1:
   dependencies:
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
+
+rc-progress@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/rc-progress/-/rc-progress-3.1.1.tgz#f7ba5eb33cc438862513ab5a71739feaf6b3ef4f"
+  integrity sha512-1ns3pW7ll9bHfdXtlVLF+vngdvlxiCDtiqwXnZFEdurst11JTiPxVdeqnCNbhWx5hP4kCKkAPqG1N0FVfTSUGA==
+  dependencies:
+    "@babel/runtime" "^7.10.1"
+    classnames "^2.2.6"
 
 react-color@^2.17.0:
   version "2.18.1"

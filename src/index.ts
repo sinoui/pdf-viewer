@@ -1,3 +1,3 @@
-import Counter from './Counter';
+import PdfViewer from './PdfViewer';
 
-export default Counter;
+export default PdfViewer;

@@ -5,5 +5,5 @@ import PdfViewer from '../src';
 import './index.css';
 
 storiesOf('pdf-viewer', module).add('查看pdf', () => (
-  <PdfViewer url={test} creator="办公厅/张三" />
+  <PdfViewer url={test} creator="张先生" />
 ));

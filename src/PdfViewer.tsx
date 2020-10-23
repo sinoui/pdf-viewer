@@ -10,8 +10,18 @@ import './PdfViewer.css';
 import ToolBar from './ToolBar';
 
 interface Props {
+  /**
+   * 指定文件路径
+   */
   url: string;
+  /**
+   * 编辑人
+   */
   creator?: string;
+  /**
+   * 指定文件名称
+   */
+  title?: string;
 }
 
 /**

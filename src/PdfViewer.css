@@ -4,7 +4,7 @@
   max-height: 100vh;
 }
 
-.sinoui-pdf-viewer-wrapper > div {
+.sinoui-pdf-viewer-wrapper > .sinoui-pdf-viewer-content {
   width: 594px;
   margin: 8px auto;
   box-sizing: border-box;

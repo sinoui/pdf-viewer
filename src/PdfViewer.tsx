@@ -7,6 +7,7 @@ import produce from 'immer';
 import PdfComment from './PdfComment';
 import { PdfAnnotationType } from './pdfTypes';
 import './PdfViewer.css';
+import ToolBar from './ToolBar';
 
 interface Props {
   url: string;
@@ -69,7 +70,8 @@ export default function PdfViewer({ url, creator = '未知' }: Props) {
 
   return (
     <div className="sinoui-pdf-viewer-wrapper">
-      <div ref={pdfContainerRef}>
+      <ToolBar>SJF </ToolBar>
+      <div ref={pdfContainerRef} className="sinoui-pdf-viewer-content">
         <Document
           file={url}
           onLoadSuccess={handleDocumentLoadSuccess}

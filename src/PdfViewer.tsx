@@ -310,7 +310,6 @@ export default function PdfViewer({
     <div className="sinoui-pdf-viewer-wrapper">
       <ToolBar>
         <span>{fileTitle}</span>
-        <div>12</div>
         <PageNumber
           onPageChange={onPageChange}
           currentPage={currentPage}

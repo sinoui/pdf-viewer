@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { Document, Page } from 'react-pdf/dist/entry.webpack';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import uuid from 'uuid/v4';
@@ -17,6 +17,7 @@ import { getRectsBySelection, genNodeByRects } from './utils/genSelectionRange';
 import ToolbarActions from './ToolbarActions';
 import MessageIcon from './icons/MessageIcon';
 import TextIcon from './icons/TextIcon';
+import PageNumber from './PageNumber';
 
 interface Props {
   /**
@@ -60,7 +61,10 @@ export default function PdfViewer({
     'normal',
   );
 
+  const scrollbarRef = useRef<Scrollbars | null>(null);
+
   const [current, setCurrent] = useState<string>();
+  const [currentPage, setCurrentPage] = useState(1);
 
   const initHeighLightDom = (nodes: PdfAnnotationType[]) => {
     const texts = nodes.filter((node) => node.type === 'text');
@@ -230,13 +234,13 @@ export default function PdfViewer({
     );
   };
 
-  const onLoadProgress = ({ total = 1, loaded = 0 }) => {
+  const onLoadProgress = useCallback(({ total = 1, loaded = 0 }) => {
     setProgress(Math.floor(loaded / total) * 100);
-  };
+  }, []);
 
-  const onAddAdditionalNoteClick = (type: AnnotationType) => {
+  const onAddAdditionalNoteClick = useCallback((type: AnnotationType) => {
     setAnnotationType(type);
-  };
+  }, []);
 
   const fileTitle = useMemo(() => {
     if (title) {
@@ -284,11 +288,29 @@ export default function PdfViewer({
     [annotations],
   );
 
+  const onScroll = () => {
+    const top = scrollbarRef.current?.getScrollTop() ?? 0;
+    const pageNo = Math.round(top / 1200) + 1;
+    if (pageNo !== currentPage) {
+      setCurrentPage(pageNo);
+    }
+  };
+
+  const onPageChange = useCallback((num: number) => {
+    setCurrentPage(num);
+    scrollbarRef.current?.scrollTop((num - 1) * 1200);
+  }, []);
+
   return (
     <div className="sinoui-pdf-viewer-wrapper">
       <ToolBar>
         <span>{fileTitle}</span>
         <div>12</div>
+        <PageNumber
+          onPageChange={onPageChange}
+          currentPage={currentPage}
+          total={pages}
+        />
         <ToolbarActions>
           <div
             title="附加批注"
@@ -314,7 +336,11 @@ export default function PdfViewer({
       {loading && (
         <Line percent={progress} strokeWidth={0.3} trailWidth={0.3} />
       )}
-      <Scrollbars className="sinoui-pdf-viewer-content__scrollbar">
+      <Scrollbars
+        ref={scrollbarRef}
+        onScroll={onScroll}
+        className="sinoui-pdf-viewer-content__scrollbar"
+      >
         <div
           ref={pdfContainerRef}
           className="sinoui-pdf-viewer-content"

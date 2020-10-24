@@ -19,6 +19,7 @@ import ToolbarActions from './ToolbarActions';
 import MessageIcon from './icons/MessageIcon';
 import TextIcon from './icons/TextIcon';
 import PageNumber from './PageNumber';
+import DownloadButton from './DownLoadButton';
 
 interface Props {
   /**
@@ -332,12 +333,14 @@ export default function PdfViewer({
           <div
             title="文字批注"
             role="button"
-            tabIndex={-1}
+            tabIndex={-2}
             onClick={() => onAddAdditionalNoteClick('text')}
             className="sinoui-pdf-viewer-wrapper__icon-wrapper"
           >
             <TextIcon title="文字批注" />
           </div>
+
+          <DownloadButton url={url} strictMode={strictMode} />
         </ToolbarActions>
       </ToolBar>
       {loading && (

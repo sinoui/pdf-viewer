@@ -16,6 +16,7 @@ import { getRectsBySelection, genNodeByRects } from './utils/genSelectionRange';
 import ToolbarActions from './ToolbarActions';
 import MessageIcon from './icons/MessageIcon';
 import TextIcon from './icons/TextIcon';
+import Scrollbars from 'react-custom-scrollbars';
 
 interface Props {
   /**
@@ -300,51 +301,53 @@ export default function PdfViewer({
       {loading && (
         <Line percent={progress} strokeWidth={0.3} trailWidth={0.3} />
       )}
-      <div
-        ref={pdfContainerRef}
-        className="sinoui-pdf-viewer-content"
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
-      >
-        <Document
-          file={url}
-          onLoadSuccess={handleDocumentLoadSuccess}
-          loading={<></>}
-          error={<div>加载文件失败</div>}
-          onLoadProgress={onLoadProgress}
+      <Scrollbars className="sinoui-pdf-viewer-content__scrollbar">
+        <div
+          ref={pdfContainerRef}
+          className="sinoui-pdf-viewer-content"
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
         >
-          {Array.from(new Array(pages), (_el, index) => (
-            <Page
-              key={index}
-              pageNumber={index + 1}
-              width={816}
-              onClick={(event: React.MouseEvent) => handlePageClick(event)}
-            />
-          ))}
+          <Document
+            file={url}
+            onLoadSuccess={handleDocumentLoadSuccess}
+            loading={<></>}
+            error={<div>加载文件失败</div>}
+            onLoadProgress={onLoadProgress}
+          >
+            {Array.from(new Array(pages), (_el, index) => (
+              <Page
+                key={index}
+                pageNumber={index + 1}
+                width={816}
+                onClick={(event: React.MouseEvent) => handlePageClick(event)}
+              />
+            ))}
 
-          {commonAnnotation.map((annotation) => (
-            <PdfComment
-              key={annotation.id}
-              annotation={annotation}
-              defaultOpen={false}
-              defaultFocus={newAnnotations.includes(annotation.id)}
-              onChange={handleCommentChange}
-              onRemove={handleCommentRemove}
-            />
-          ))}
+            {commonAnnotation.map((annotation) => (
+              <PdfComment
+                key={annotation.id}
+                annotation={annotation}
+                defaultOpen={false}
+                defaultFocus={newAnnotations.includes(annotation.id)}
+                onChange={handleCommentChange}
+                onRemove={handleCommentRemove}
+              />
+            ))}
 
-          {textAnnotation.map((annotation) => (
-            <PdfTextComment
-              key={annotation.id}
-              annotation={annotation}
-              defaultOpen={newAnnotations.includes(annotation.id)}
-              defaultFocus={current === annotation.id}
-              onChange={handleCommentChange}
-              onClose={() => setCurrent(undefined)}
-            />
-          ))}
-        </Document>
-      </div>
+            {textAnnotation.map((annotation) => (
+              <PdfTextComment
+                key={annotation.id}
+                annotation={annotation}
+                defaultOpen={newAnnotations.includes(annotation.id)}
+                defaultFocus={current === annotation.id}
+                onChange={handleCommentChange}
+                onClose={() => setCurrent(undefined)}
+              />
+            ))}
+          </Document>
+        </div>
+      </Scrollbars>
     </div>
   );
 }

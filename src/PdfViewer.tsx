@@ -129,7 +129,6 @@ export default function PdfViewer({
     //  批注添加完成之后返回普通操作的模式
     setAnnotationType('normal');
     setCurrent(id);
-    saveAnnotations([...annotations, annotation]);
   };
 
   /**
@@ -298,7 +297,9 @@ export default function PdfViewer({
           </div>
         </ToolbarActions>
       </ToolBar>
-      {loading && <Line percent={progress} />}
+      {loading && (
+        <Line percent={progress} strokeWidth={0.3} trailWidth={0.3} />
+      )}
       <div
         ref={pdfContainerRef}
         className="sinoui-pdf-viewer-content"

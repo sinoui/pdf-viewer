@@ -65,12 +65,7 @@ const PdfCommentBox = React.forwardRef<{ focus: Function }, Props>(
                   onChange(event.currentTarget.innerHTML);
                 }
               }}
-              onFocus={(event) => {
-                setIsFocused(true);
-                if (onChange) {
-                  onChange(event.currentTarget.innerHTML);
-                }
-              }}
+              onFocus={() => setIsFocused(true)}
             />
           </CustomScrollbar>
         </div>

@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React from 'react';
 import SvgIcon, { SvgIconProps } from './SvgIcon';
 
-export default function MessageIcon(props: SvgIconProps) {
+export default function TextIcon(props: SvgIconProps) {
   const { className, ...other } = props;
   return (
     <SvgIcon className={classNames('svg-icon-message', className)} {...other}>

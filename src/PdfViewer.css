@@ -5,6 +5,13 @@
   height: 100vh;
 }
 
+.sinoui-pdf-viewer-wrapper .strict-mode {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
 .sinoui-pdf-viewer-wrapper .sinoui-pdf-viewer-content {
   width: 816px;
   margin: 8px auto;

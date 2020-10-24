@@ -1,0 +1,29 @@
+.sinoui-pdf-page-number-container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.sinoui-pdf-page-number-input {
+  width: 40px;
+  outline: none;
+  height: 25px;
+  line-height: 25px;
+  background: white;
+  margin-right: 15px;
+  text-align: right;
+  padding: 0 5px;
+  box-sizing: border-box;
+}
+
+.sinoui-pdf-page-number-divide {
+  display: inline-block;
+  width: 10px;
+  text-align: center;
+}
+
+.sinoui-pdf-page-number-total {
+  display: inline-block;
+  width: 30px;
+  text-align: center;
+}

@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /**
  * 创建高亮的dom节点
  * @param param0 需要操作的选中区域集合
@@ -34,6 +35,42 @@ export function createHeightLight(
 }
 
 /**
+ * 对比两个rect，检测rect1是否在rect2中
+ * @param rect1
+ * @param rect2
+ */
+function checkInRange(rect1: DOMRect, rect2: DOMRect) {
+  const { left: left1, top: top1, right: right1, bottom: bottom1 } = rect1;
+  const { left: left2, top: top2, right: right2, bottom: bottom2 } = rect2;
+
+  if (
+    left1 >= left2 &&
+    top1 >= top2 &&
+    right1 <= right2 &&
+    bottom1 <= bottom2
+  ) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * 计算选中区域过滤重叠的部分
+ * @param rects
+ */
+function calcRects(rects: DOMRect[]) {
+  // 过滤完全重叠的部分
+  const ret = rects.reduce((pre: DOMRect[], cur: DOMRect) => {
+    const idx = pre.findIndex((item) => checkInRange(item, cur));
+    if (idx < 0) {
+      return [...pre, cur];
+    }
+    return [...pre.slice(0, idx), cur, ...pre.slice(idx + 1)];
+  }, []);
+  return ret;
+}
+
+/**
  * 根据section获取对应的区域坐标数组
  */
 export function getRectsBySelection(selection?: Selection) {
@@ -57,7 +94,8 @@ export function getRectsBySelection(selection?: Selection) {
     });
   });
 
-  return rects;
+  // return rects;
+  return calcRects(rects);
 }
 
 /**

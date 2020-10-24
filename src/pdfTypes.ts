@@ -8,6 +8,8 @@ export interface PdfAnnotationType {
   content: string;
   // 文字批注区域信息
   rects?: DOMRect[];
+  // 生成文字备注时用于计算的container信息
+  containerRect?: DOMRect;
 }
 
 /**

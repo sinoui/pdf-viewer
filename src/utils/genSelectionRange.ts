@@ -1,15 +1,26 @@
 /**
  * 创建高亮的dom节点
- * @param param0
- * @param container
- * @param annotationId
+ * @param param0 需要操作的选中区域集合
+ * @param container 要添加到的dom元素
+ * @param annotationId 需要添加的批注id
+ * @param rect 保存批注时的dom操作，用于回显的判断
  */
 export function createHeightLight(
   { left, top, width, height }: DOMRect,
   container: Element,
   annotationId: string,
+  rect?: DOMRect,
 ) {
-  const { left: rootLeft, top: rootTop } = container.getBoundingClientRect();
+  let rootLeft;
+  let rootTop;
+  if (rect) {
+    rootLeft = rect.left;
+    rootTop = rect.top;
+  } else {
+    const rectWithContainer = container.getBoundingClientRect();
+    rootLeft = rectWithContainer.left ?? 0;
+    rootTop = rectWithContainer.top ?? 0;
+  }
   const node = document.createElement('div');
   node.style.position = 'absolute';
   node.style.top = `${top - rootTop}px`;
@@ -50,14 +61,19 @@ export function getRectsBySelection(selection?: Selection) {
 }
 
 /**
- * 处理光标选中的内容，如果没有选中信息，返回false，否则div添加完成之后返回true
+ * 处理光标选中的内容，生成对应的高亮dom
+ * @param rects 光标选中结点的所有位置集合
  * @param container pdf的容器
  * @param annotationId 添加的批注的id
+ * @param rect 保存批注时的dom操作，用于回显的判断
  */
 export function genNodeByRects(
   rects: DOMRect[],
   container: HTMLDivElement,
   annotationId: string,
+  rect?: DOMRect,
 ) {
-  rects.forEach((rect) => createHeightLight(rect, container, annotationId));
+  rects.forEach((_rect) =>
+    createHeightLight(_rect, container, annotationId, rect),
+  );
 }

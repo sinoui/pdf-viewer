@@ -65,7 +65,12 @@ export default function PdfViewer({
   const initHeighLightDom = (nodes: PdfAnnotationType[]) => {
     const texts = nodes.filter((node) => node.type === 'text');
     texts.forEach((ano) => {
-      genNodeByRects(ano.rects ?? [], pdfContainerRef.current!, ano.id);
+      genNodeByRects(
+        ano.rects ?? [],
+        pdfContainerRef.current!,
+        ano.id,
+        ano.containerRect,
+      );
     });
   };
 
@@ -114,6 +119,7 @@ export default function PdfViewer({
     offsetY: number,
     id = uuid(),
     rects?: DOMRect[],
+    containerRect?: DOMRect,
   ) => {
     const annotation = {
       id,
@@ -124,6 +130,7 @@ export default function PdfViewer({
       creator,
       createTime: dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'),
       rects,
+      containerRect,
     };
     setAnnotations((prev) => [...prev, annotation]);
     setNewAnnotations((prev) => [...prev, id]);
@@ -146,7 +153,13 @@ export default function PdfViewer({
     }
     genNodeByRects(rects, pdfContainerRef.current!, id);
 
-    handleAddBaseAnnotion(offsetX, offsetY, id, rects);
+    handleAddBaseAnnotion(
+      offsetX,
+      offsetY,
+      id,
+      rects,
+      pdfContainerRef.current?.getBoundingClientRect(),
+    );
   };
 
   /**

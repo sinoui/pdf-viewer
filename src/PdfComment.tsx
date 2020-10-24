@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Draggable from 'react-draggable';
 import { PdfAnnotationType } from './pdfTypes';
 import PdfCommentBox from './PdfCommentBox';
 import MessageIcon from './icons/MessageIcon';
 import './PdfComment.css';
+import Line from './icons/Line';
 
 interface Props {
   annotation: PdfAnnotationType;
@@ -33,6 +34,8 @@ function PdfComment({
     // 注意：这里不要监听 defaultFocus 的变更
   }, []);
 
+  const [isShowLine, setIsShowLine] = useState(false);
+
   const handleIconClick = (event: React.MouseEvent) => {
     event.stopPropagation();
 
@@ -40,6 +43,7 @@ function PdfComment({
       setIsOpen(true);
       boxRef.current?.focus();
     }
+    setIsShowLine(true);
   };
 
   const handleContentChange = (content: string) => {
@@ -71,6 +75,22 @@ function PdfComment({
     }
   };
 
+  const handleFocus = () => {
+    setIsShowLine(true);
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+    setIsShowLine(false);
+  };
+
+  const startPonit = useMemo(() => ({ x: annotation.x, y: annotation.y }), [
+    annotation,
+  ]);
+  const targetPoint = useMemo(() => ({ x: 816, y: annotation.y + 20 }), [
+    annotation,
+  ]);
+
   return (
     <>
       <Draggable
@@ -83,16 +103,19 @@ function PdfComment({
           tabIndex={0}
           onKeyUp={handleKeyUp}
           className="sinoui-pdf-commemt-icon-wrapper"
+          onBlur={() => setIsShowLine(false)}
         >
           <MessageIcon />
         </div>
       </Draggable>
+      {isShowLine && <Line startPoint={startPonit} targetPoint={targetPoint} />}
       <PdfCommentBox
         annotation={annotation}
         open={isOpen}
-        onClose={() => setIsOpen(false)}
+        onClose={handleClose}
         ref={boxRef}
         onChange={handleContentChange}
+        onFocus={handleFocus}
       />
     </>
   );

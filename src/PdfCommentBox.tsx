@@ -20,7 +20,10 @@ interface Props {
  * pdf批注盒子
  */
 const PdfCommentBox = React.forwardRef<{ focus: Function }, Props>(
-  function PdfCommentBox({ annotation, open, onClose, style, onChange }, ref) {
+  function PdfCommentBox(
+    { annotation, open, onClose, style, onChange, onFocus },
+    ref,
+  ) {
     const [isFocused, setIsFocused] = useState(false);
 
     const posStyle: React.CSSProperties = {
@@ -65,7 +68,12 @@ const PdfCommentBox = React.forwardRef<{ focus: Function }, Props>(
                   onChange(event.currentTarget.innerHTML);
                 }
               }}
-              onFocus={() => setIsFocused(true)}
+              onFocus={() => {
+                setIsFocused(true);
+                if (onFocus) {
+                  onFocus();
+                }
+              }}
             />
           </CustomScrollbar>
         </div>

@@ -6,13 +6,13 @@
   background-color: white;
   right: -262px;
   position: absolute;
-  background-color: #f4e9d6;
+  background-color: #ffffdd;
   transform: translateY(-15px);
   padding: 8px;
 }
 
 .sinoui-pdf-comment-box-wrapper:hover {
-  background-color: #fff4e0;
+  background-color: #ffffcc;
 }
 
 .sinoui-pdf-comment-box-wrapper .editor {

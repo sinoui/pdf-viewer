@@ -92,9 +92,6 @@ export default function PdfViewer({
       const defaultData = localStorage.getItem('pdf-annotations');
       const defaultAnnotations = defaultData ? JSON.parse(defaultData) : [];
       setAnnotations(defaultAnnotations);
-      setNewAnnotations(
-        defaultAnnotations.map((item: PdfAnnotationType) => item.id),
-      );
       requestAnimationFrame(() => {
         initHeighLightDom(defaultAnnotations);
       });
@@ -341,7 +338,7 @@ export default function PdfViewer({
               <PdfComment
                 key={annotation.id}
                 annotation={annotation}
-                defaultOpen={false}
+                defaultOpen={newAnnotations.includes(annotation.id)}
                 defaultFocus={newAnnotations.includes(annotation.id)}
                 onChange={handleCommentChange}
                 onRemove={handleCommentRemove}

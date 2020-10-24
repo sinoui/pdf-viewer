@@ -7,6 +7,7 @@ import uuid from 'uuid/v4';
 import dayjs from 'dayjs';
 import produce from 'immer';
 import { Line } from 'rc-progress';
+import Scrollbars from 'react-custom-scrollbars';
 import PdfComment from './PdfComment';
 import PdfTextComment from './PdfTextComment';
 import { PdfAnnotationType, AnnotationType } from './pdfTypes';
@@ -16,7 +17,6 @@ import { getRectsBySelection, genNodeByRects } from './utils/genSelectionRange';
 import ToolbarActions from './ToolbarActions';
 import MessageIcon from './icons/MessageIcon';
 import TextIcon from './icons/TextIcon';
-import Scrollbars from 'react-custom-scrollbars';
 
 interface Props {
   /**

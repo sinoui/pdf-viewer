@@ -64,9 +64,10 @@ export default function PdfViewer({
   const initHeighLightDom = (nodes: PdfAnnotationType[]) => {
     const texts = nodes.filter((node) => node.type === 'text');
     texts.forEach((ano) => {
-      genNodeByRects(ano.rects ?? [], pdfContainerRef.current, ano.id);
+      genNodeByRects(ano.rects ?? [], pdfContainerRef.current!, ano.id);
     });
   };
+
   const handleDocumentLoadSuccess = async ({ numPages }: any) => {
     setPages(numPages);
     setLoading(false);
@@ -77,7 +78,10 @@ export default function PdfViewer({
       setNewAnnotations(
         defaultAnnotations.map((item: PdfAnnotationType) => item.id),
       );
-      initHeighLightDom(defaultAnnotations);
+      // 修复文字批注回显位置不正确的问题
+      requestAnimationFrame(() => {
+        initHeighLightDom(defaultAnnotations);
+      });
     } else {
       const defaultData = localStorage.getItem('pdf-annotations');
       const defaultAnnotations = defaultData ? JSON.parse(defaultData) : [];
@@ -85,7 +89,9 @@ export default function PdfViewer({
       setNewAnnotations(
         defaultAnnotations.map((item: PdfAnnotationType) => item.id),
       );
-      initHeighLightDom(defaultAnnotations);
+      requestAnimationFrame(() => {
+        initHeighLightDom(defaultAnnotations);
+      });
     }
   };
 
@@ -236,7 +242,6 @@ export default function PdfViewer({
     if (!id) {
       return;
     }
-    target.focus();
     setCurrent(id);
     setNewAnnotations([id]);
   };

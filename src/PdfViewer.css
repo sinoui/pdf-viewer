@@ -1,7 +1,8 @@
 .sinoui-pdf-viewer-wrapper {
   background-color: #565656;
-  overflow: auto;
+  overflow: hidden;
   max-height: 100vh;
+  height: 100vh;
 }
 
 .sinoui-pdf-viewer-wrapper > .sinoui-pdf-viewer-content {
@@ -15,17 +16,6 @@
   padding: 8px 0;
 }
 
-.sinoui-pdf-viewer-wrapper::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-  background-color: #ffffff;
-}
-
-.sinoui-pdf-viewer-wrapper::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-}
-
 .sinoui-pdf-viewer-wrapper .pdf-text-annotation {
   background-color: #ffcc66;
   opacity: 0.4;
@@ -35,4 +25,10 @@
 
 .sinoui-pdf-viewer-wrapper__icon-wrapper {
   margin-left: 16px;
+}
+
+.sinoui-pdf-viewer-content__scrollbar > div:first-child {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
 }

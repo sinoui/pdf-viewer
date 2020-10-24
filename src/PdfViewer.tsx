@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import produce from 'immer';
 import { Line } from 'rc-progress';
 import Scrollbars from 'react-custom-scrollbars';
+import classNames from 'classnames';
 import PdfComment from './PdfComment';
 import PdfTextComment from './PdfTextComment';
 import { PdfAnnotationType, AnnotationType } from './pdfTypes';
@@ -39,6 +40,11 @@ interface Props {
     get: () => Promise<any>;
     save: (annotations: PdfAnnotationType[]) => Promise<any>;
   };
+  /**
+   * 严格模式
+   * 严格模式下禁止选中和下载
+   */
+  strictMode?: boolean;
 }
 
 /**
@@ -49,6 +55,7 @@ export default function PdfViewer({
   creator = '未知',
   title,
   annotationsStore,
+  strictMode,
 }: Props) {
   const [pages, setPages] = useState(0);
   const [annotations, setAnnotations] = useState<PdfAnnotationType[]>([]);
@@ -343,7 +350,9 @@ export default function PdfViewer({
       >
         <div
           ref={pdfContainerRef}
-          className="sinoui-pdf-viewer-content"
+          className={classNames('sinoui-pdf-viewer-content', {
+            'strict-mode': strictMode,
+          })}
           onClick={handleClick}
           onKeyDown={handleKeyDown}
         >

@@ -21,7 +21,7 @@ interface Props {
  */
 const PdfCommentBox = React.forwardRef<{ focus: Function }, Props>(
   function PdfCommentBox(
-    { annotation, open, onClose, style, onChange, onFocus },
+    { annotation, open, onClose, style, onChange, onFocus, onBlur },
     ref,
   ) {
     const [isFocused, setIsFocused] = useState(false);
@@ -40,6 +40,23 @@ const PdfCommentBox = React.forwardRef<{ focus: Function }, Props>(
       }),
       [],
     );
+
+    const handleFocus = () => {
+      setIsFocused(true);
+      if (onFocus) {
+        onFocus();
+      }
+    };
+
+    const handleBlur = (event: any) => {
+      setIsFocused(false);
+      if (onChange) {
+        onChange(event.currentTarget.innerHTML);
+      }
+      if (onBlur) {
+        onBlur();
+      }
+    };
 
     return open ? (
       <div
@@ -62,18 +79,8 @@ const PdfCommentBox = React.forwardRef<{ focus: Function }, Props>(
                 __html: annotation.content,
               }}
               ref={editorRef}
-              onBlur={(event) => {
-                setIsFocused(false);
-                if (onChange) {
-                  onChange(event.currentTarget.innerHTML);
-                }
-              }}
-              onFocus={() => {
-                setIsFocused(true);
-                if (onFocus) {
-                  onFocus();
-                }
-              }}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
             />
           </CustomScrollbar>
         </div>

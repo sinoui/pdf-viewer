@@ -35,6 +35,7 @@ function PdfComment({
   }, []);
 
   const [isShowLine, setIsShowLine] = useState(false);
+  const [isMoving, setIsMoving] = useState(false);
 
   const handleIconClick = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -62,10 +63,15 @@ function PdfComment({
     }
   };
 
+  const handleDrag = () => {
+    setIsMoving(true);
+  };
+
   const handleStop = (
     _event: any,
     { lastX, lastY }: { lastX: number; lastY: number },
   ) => {
+    setIsMoving(false);
     if (onChange) {
       onChange({
         ...annotation,
@@ -77,6 +83,10 @@ function PdfComment({
 
   const handleFocus = () => {
     setIsShowLine(true);
+  };
+
+  const handleBlur = () => {
+    setIsShowLine(false);
   };
 
   const handleClose = () => {
@@ -94,6 +104,7 @@ function PdfComment({
   return (
     <>
       <Draggable
+        onDrag={handleDrag}
         onStop={handleStop}
         defaultPosition={{ x: annotation.x, y: annotation.y }}
       >
@@ -103,11 +114,21 @@ function PdfComment({
           tabIndex={0}
           onKeyUp={handleKeyUp}
           className="sinoui-pdf-commemt-icon-wrapper"
-          onBlur={() => setIsShowLine(false)}
+          onBlur={handleBlur}
         >
           <MessageIcon />
         </div>
       </Draggable>
+      {isMoving && (
+        <div
+          className="sinoui-pdf-commemt-icon-wrapper"
+          style={{
+            transform: `translate(${annotation.x}px,${annotation.y}px)`,
+          }}
+        >
+          <MessageIcon />
+        </div>
+      )}
       {isShowLine && <Line startPoint={startPonit} targetPoint={targetPoint} />}
       <PdfCommentBox
         annotation={annotation}
@@ -116,6 +137,7 @@ function PdfComment({
         ref={boxRef}
         onChange={handleContentChange}
         onFocus={handleFocus}
+        onBlur={handleBlur}
       />
     </>
   );

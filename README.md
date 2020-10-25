@@ -67,24 +67,18 @@ const config = {
     new CopyPlugin({
       patterns: [
         {
-          from: resolve(
-            __dirname,
-            '../node_modules/pdfjs-dist/build/pdf.min.js',
-          ),
+          from: resolve(__dirname, 'node_modules/pdfjs-dist/build/pdf.min.js'),
           to: 'static',
         },
         {
           from: resolve(
             __dirname,
-            '../node_modules/pdfjs-dist/build/pdf.worker.min.js',
+            'node_modules/pdfjs-dist/build/pdf.worker.min.js',
           ),
           to: 'static',
         },
         {
-          from: resolve(
-            __dirname,
-            '../node_modules/pdfjs-dist/web/pdf_viewer.js',
-          ),
+          from: resolve(__dirname, 'node_modules/pdfjs-dist/web/pdf_viewer.js'),
           to: 'static',
         },
       ],
@@ -189,6 +183,36 @@ module.exports = ({ config }) => {
 
   return config;
 };
+```
+
+### 显示中文
+
+为了更好的中文排版效果，需要加载 `pdfjs-dist` 的 `cMaps`，在 webpack 打包时拷贝 `cMaps` 文件：
+
+```ts
+const CopyPlugin = require('copy-webpack-plugin');
+
+config.plugins.push(
+  new CopyPlugin({
+    patterns: [
+      {
+        from: 'node_modules/pdfjs-dist/cmaps/',
+        to: 'cmaps/',
+      },
+    ],
+  }),
+);
+```
+
+使用组件时添加额外的配置：
+
+```tsx
+<PdfViewer
+  options={{
+    cMapUrl: '/cmaps/',
+    cMapPacked: true,
+  }}
+/>
 ```
 
 ## 本地开发

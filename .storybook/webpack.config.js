@@ -44,6 +44,10 @@ module.exports = ({ config }) => {
           ),
           to: 'static',
         },
+        {
+          from: resolve(__dirname, '../node_modules/pdfjs-dist/cmaps/'),
+          to: 'cmaps/',
+        },
       ],
     }),
   );

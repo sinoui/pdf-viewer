@@ -46,6 +46,10 @@ export interface Props {
    * 严格模式下禁止选中和下载
    */
   strictMode?: boolean;
+  /**
+   * pdf.js 的配置项。详见：[PDF.js documentation on DocumentInitParameters](https://mozilla.github.io/pdf.js/api/draft/module-pdfjsLib.html#~DocumentInitParameters)。
+   */
+  options?: any;
 }
 
 /**
@@ -57,6 +61,7 @@ export default function PdfViewer({
   title,
   annotationsStore,
   strictMode,
+  options,
 }: Props) {
   const [pages, setPages] = useState(0);
   const [annotations, setAnnotations] = useState<PdfAnnotationType[]>([]);
@@ -363,6 +368,7 @@ export default function PdfViewer({
             loading={<></>}
             error={<div>加载文件失败</div>}
             onLoadProgress={onLoadProgress}
+            options={options}
           >
             {Array.from(new Array(pages), (_el, index) => (
               <Page

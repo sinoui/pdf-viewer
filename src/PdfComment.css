@@ -1,4 +1,5 @@
-.sinoui-pdf-commemt-icon-wrapper {
+.sinoui-pdf-commemt-icon-wrapper,
+.sinoui-pdf-commemt-icon-wrapper--isMoving {
   display: inline-block;
   background-color: #ffffaa;
   border: 1px solid rgba(0, 0, 0, 0.6);
@@ -18,4 +19,8 @@
 
 .sinoui-pdf-commemt-icon-wrapper:focus {
   background-color: #ffff00;
+}
+
+.sinoui-pdf-commemt-icon-wrapper--isMoving {
+  opacity: 0.6;
 }

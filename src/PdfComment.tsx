@@ -121,7 +121,7 @@ function PdfComment({
       </Draggable>
       {isMoving && (
         <div
-          className="sinoui-pdf-commemt-icon-wrapper"
+          className="sinoui-pdf-commemt-icon-wrapper--isMoving"
           style={{
             transform: `translate(${annotation.x}px,${annotation.y}px)`,
           }}

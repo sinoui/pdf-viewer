@@ -93,7 +93,7 @@ const config = {
 };
 ```
 
-### 配置外部扩展
+#### 配置外部扩展
 
 将 pdfjs-dist 配置为 外部扩展：
 
@@ -106,7 +106,7 @@ const config = {
 };
 ```
 
-### 使用 `@sinoui/pdf-viewer/dynamic` 组件
+#### 使用 `@sinoui/pdf-viewer/dynamic` 组件
 
 `@sinoui/pdf-viewer/dynamic` 提供了便捷的动态加载 pdf.js 脚本的组件，用法与`PdfViewer` 一致，与如下所示：
 
@@ -140,7 +140,7 @@ function PdfViewerDemo() {
 }
 ```
 
-### 与 storybook 组合使用
+#### 与 storybook 组合使用
 
 需要在 `.storybook/webpack.config.js` 中添加类似上文提出的配置。如下所示：
 

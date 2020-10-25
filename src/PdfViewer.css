@@ -31,7 +31,23 @@
 }
 
 .sinoui-pdf-viewer-wrapper__icon-wrapper {
-  margin-left: 16px;
+  height: 36px;
+  width: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 8px;
+}
+
+.sinoui-pdf-viewer-wrapper__icon-wrapper .svg-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+.sinoui-pdf-viewer-wrapper__icon-wrapper--select {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0px 2px 8px 2px #000000;
 }
 
 .sinoui-pdf-viewer-content__scrollbar > div:first-child {

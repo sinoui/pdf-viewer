@@ -318,20 +318,22 @@ export default function PdfViewer({
         <ToolbarActions>
           <div
             title="附加批注"
-            role="button"
-            tabIndex={-1}
             onClick={() => onAddAdditionalNoteClick('additional')}
-            className="sinoui-pdf-viewer-wrapper__icon-wrapper"
+            className={classNames('sinoui-pdf-viewer-wrapper__icon-wrapper', {
+              'sinoui-pdf-viewer-wrapper__icon-wrapper--select':
+                annotationType === 'additional',
+            })}
           >
             <MessageIcon title="附加批注" />
           </div>
 
           <div
             title="文字批注"
-            role="button"
-            tabIndex={-2}
             onClick={() => onAddAdditionalNoteClick('text')}
-            className="sinoui-pdf-viewer-wrapper__icon-wrapper"
+            className={classNames('sinoui-pdf-viewer-wrapper__icon-wrapper', {
+              'sinoui-pdf-viewer-wrapper__icon-wrapper--select':
+                annotationType === 'text',
+            })}
           >
             <TextIcon title="文字批注" />
           </div>

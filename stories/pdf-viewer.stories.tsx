@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import test from './test.pdf';
-import PdfViewer from '../src';
+import PdfViewer from '../src/dynamic';
 import './index.css';
 
 storiesOf('pdf-viewer', module)

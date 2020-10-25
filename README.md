@@ -41,6 +41,156 @@ const annotationsStore = {
 />;
 ```
 
+## 优化
+
+### 在 webpack 中使用
+
+在 webpack 中使用 pdf-viewer，往往会导致开发与编译缓慢。这是因为 pdf.js 代码量特别大，推荐的做法是采用 [webpack exnternals](https://webpack.docschina.org/configuration/externals/)，直接加载 pdf.js 的包，而不经过 webpack 打包处理。具体做法如下所示。
+
+#### 直接拷贝 pdfjs 文件
+
+可以通过 [copy-webpack-plugin](https://webpack.docschina.org/plugins/copy-webpack-plugin/)，将 `node_modules/pdfjs-dist` 中的 js 文件拷贝到包中。
+
+安装 copy-webpack-plugin:
+
+```tsx
+yarn add copy-webpack-plugin --dev
+```
+
+在 webpack 的配置文件中添加以下配置：
+
+```tsx
+const CopyPlugin = require('copy-webpack-plugin');
+
+const config = {
+  plugins: [
+    new CopyPlugin({
+      patterns: [
+        {
+          from: resolve(
+            __dirname,
+            '../node_modules/pdfjs-dist/build/pdf.min.js',
+          ),
+          to: 'static',
+        },
+        {
+          from: resolve(
+            __dirname,
+            '../node_modules/pdfjs-dist/build/pdf.worker.min.js',
+          ),
+          to: 'static',
+        },
+        {
+          from: resolve(
+            __dirname,
+            '../node_modules/pdfjs-dist/web/pdf_viewer.js',
+          ),
+          to: 'static',
+        },
+      ],
+    }),
+  ],
+};
+```
+
+### 配置外部扩展
+
+将 pdfjs-dist 配置为 外部扩展：
+
+```ts
+const config = {
+  externals: {
+    'pdfjs-dist': 'pdfjsLib',
+    'pdfjs-dist/lib/web/pdf_link_service': 'pdfjsViewer',
+  },
+};
+```
+
+### 使用 `@sinoui/pdf-viewer/dynamic` 组件
+
+`@sinoui/pdf-viewer/dynamic` 提供了便捷的动态加载 pdf.js 脚本的组件，用法与`PdfViewer` 一致，与如下所示：
+
+```tsx
+import PdfViewerDynamic from '@sinoui/pdf-viewer/dynamic';
+
+function PdfViewerDemo() {
+  return (
+    <PdfViewerDynamic
+      publicPath="/static"
+      url="/test.pdf"
+      loading={<div>正在准备pdf阅读器</div>}
+    />
+  );
+}
+```
+
+`publicPath` 可以与 webpack 中的 `process.env.PUBLIC_PATH` 组合使用：
+
+```tsx
+import PdfViewerDynamic from '@sinoui/pdf-viewer/dynamic';
+
+function PdfViewerDemo() {
+  return (
+    <PdfViewerDynamic
+      publicPath={process.env.PUBLIC_PATH}
+      url="/test.pdf"
+      loading={<div>正在准备pdf阅读器</div>}
+    />
+  );
+}
+```
+
+### 与 storybook 组合使用
+
+需要在 `.storybook/webpack.config.js` 中添加类似上文提出的配置。如下所示：
+
+```tsx
+const { resolve } = require('path');
+const CopyPlugin = require('copy-webpack-plugin');
+
+module.exports = ({ config }) => {
+  config.resolve.extensions.push('.ts', '.tsx');
+  config.resolve.alias = {
+    '@sinoui/pdf-viewer': resolve(__dirname, '../src'),
+  };
+
+  config.plugins.push(
+    new CopyPlugin({
+      patterns: [
+        {
+          from: resolve(
+            __dirname,
+            '../node_modules/pdfjs-dist/build/pdf.min.js',
+          ),
+          to: 'static',
+        },
+        {
+          from: resolve(
+            __dirname,
+            '../node_modules/pdfjs-dist/build/pdf.worker.min.js',
+          ),
+          to: 'static',
+        },
+        {
+          from: resolve(
+            __dirname,
+            '../node_modules/pdfjs-dist/web/pdf_viewer.js',
+          ),
+          to: 'static',
+        },
+      ],
+    }),
+  );
+
+  config.externals = {
+    'pdfjs-dist': 'pdfjsLib',
+    'pdfjs-dist/lib/web/pdf_link_service': 'pdfjsViewer',
+  };
+
+  return config;
+};
+```
+
 ## 本地开发
 
 项目中有以下有用的命令。

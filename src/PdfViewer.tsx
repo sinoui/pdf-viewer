@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState, useRef, useMemo, useCallback } from 'react';
-import { Document, Page } from 'react-pdf/dist/entry.webpack';
+import { Document, Page } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import uuid from 'uuid/v4';
 import dayjs from 'dayjs';
@@ -21,7 +21,7 @@ import TextIcon from './icons/TextIcon';
 import PageNumber from './PageNumber';
 import DownloadButton from './DownLoadButton';
 
-interface Props {
+export interface Props {
   /**
    * 指定文件路径
    */
